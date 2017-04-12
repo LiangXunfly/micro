@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% import 'manager/macros.html' as macros %}
+
+{% block page_content %}
+    <p>
+    {% if reports == [] %}
+        没有处理过的举报
+    {% else %}
+        {{ reports|count }}条处理过的举报
+    {% endif %}
+    </p>
+    {% for report in reports %}
+        {{ macros.render_report(report) }}
+        {% if report.result == 0 %}
+            处理结果为不做处理
+        {% elif report.result == 1 %}
+            处理结果是限权三小时
+        {% elif report.result == 2 %}
+            处理结果是限权一天
+        {% elif report.result == 3 %}
+            处理结果是限权三天
+        {% elif report.result == 4 %}
+            处理结果是限权一月
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+

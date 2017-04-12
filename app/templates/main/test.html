@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% import 'main/macros.html' as macros %}
+
+{% block page_content %}
+    {{ macros.render_user(user) }}
+{% endblock %}

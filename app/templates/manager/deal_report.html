@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% import 'manager/macros.html' as macros with context %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block page_content %}
+    {{ macros.render_report(report) }}
+    {{ wtf.quick_form(form) }}
+{% endblock %}

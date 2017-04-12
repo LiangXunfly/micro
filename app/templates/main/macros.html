@@ -1,0 +1,88 @@
+{% macro render_username(username) %}
+    {% if User.query.filter_by(username=username).first().avatar_url %}
+    <img src="{{ User.query.filter_by(username=username).first().avatar_url }}", width="60", height="60">
+{% else %}
+    <img src="{{ url_for('static', filename='images/favicon.ico') }}", width="60", height="60">
+{% endif %}
+<a href="{{ url_for('main.user', username=User.query.filter_by(username=username).first().username) }}">
+    <font size="1", color="#dc143c">{{ User.query.filter_by(username=username).first() }}</font></a>
+{% endmacro %}
+
+
+{% macro render_user(user) %}
+{% if user.avatar_url %}
+    <img src="{{ user.avatar_url }}", width="60", height="60">
+{% else %}
+    <img src="{{ url_for('static', filename='images/favicon.ico') }}", width="60", height="60">
+{% endif %}
+<a href="{{ url_for('main.user', username=user.username) }}"><font size="1", color="#dc143c">{{ user.username }}</font></a>
+{% endmacro %}
+
+
+{% macro render_post_content(post, message=None) %}
+    <p>
+        {{ render_user(post.author) }}: {{ post.timestamp }} says:<br>
+        {% if message != None %}
+            <a href="{{ url_for('main.post', id=post.id, message_id=message.id) }}">title: {{ post.title }}:<br></a>
+        {% else %}
+            <a href="{{ url_for('main.post', id=post.id) }}">title: {{ post.title }}:<br></a>
+        {% endif %}
+        content: {{ post.body }}<br>
+        {% if post.image.url_path %}
+            <image src="{{ post.image.url_path }}"></image><br>
+        {% endif %}
+    </p>
+{% endmacro %}
+
+{% macro render_post(post) %}
+    {{ render_post_content(post) }}
+    {% if not current_user.is_praising(post) %}
+        <a href="{{ url_for('main.praise', id=post.id) }}">赞</a>&nbsp;&nbsp;
+    {% else %}
+        <a href="{{ url_for('main.unpraise', id=post.id) }}">取消赞</a>&nbsp;&nbsp;
+    {% endif %}
+    <a href="{{ url_for('main.comment', id=post.id) }}">评论</a>&nbsp;&nbsp;
+    {% if not current_user.is_collecting(post) %}
+        <a href="{{ url_for('main.collect', id=post.id) }}">收藏</a>&nbsp;&nbsp;
+    {% else %}
+        <a href="{{ url_for('main.uncollect', id=post.id) }}">取消收藏</a>&nbsp;&nbsp;
+    {% endif %}
+    <a href="{{ url_for('main.get_praise_list', id=post.id) }}">{{ post.praises.count() }}赞列表</a>&nbsp;&nbsp;
+    {% if current_user.id == post.author_id %}
+        {% if post.is_published == True %}
+            <a href="{{ url_for('main.make_personal', id=post.id) }}">设为私密微博</a>&nbsp;&nbsp;
+        {% else %}
+            <a href="{{ url_for('main.make_published', id=post.id) }}">公开此微博</a>&nbsp;&nbsp;
+            <a href="{{ url_for('main.edit_personal', id=post.id) }}">编辑该私密微博</a>&nbsp;&nbsp;
+        {% endif %}
+        <a href="{{ url_for('main.delete_blog', id=post.id) }}">删除</a>
+    {% else %}
+        <a href="{{ url_for('main.report_post', id=post.id) }}">举报</a>
+    {% endif %}
+{% endmacro %}
+
+
+{% macro render_whole_post(post) %}
+    {{ render_post(post) }}
+    {% for comment in post.comments %}
+        {{ render_comment(comment) }}
+    {% endfor %}
+{% endmacro %}
+
+
+{% macro render_comment(comment) %}
+    <p>
+    {% if comment.comment_id == None %}
+        <a href="{{ url_for('main.user', username=comment.author.username) }}">{{ comment.author.username }}</a> : {{ comment.body }}
+    {% else %}
+        <a href="{{ url_for('main.user', username=comment.author.username) }}">{{ comment.author.username }}</a>
+        <a href="{{ url_for('main.user', username=comment.replied_user.username) }}">回复 {{ comment.replied_user.username }}</a>： {{ comment.body }}
+    {% endif %}
+    {% if comment.author_id != current_user.id %}
+        <a href="{{ url_for('main.reply', id=comment.id) }}">回复</a>&nbsp;&nbsp;
+        <a href="{{ url_for('main.report_comment', id=comment.id) }}">举报</a>
+    {% else %}
+        <a href="{{ url_for('main.delete_comment', id=comment.id) }}">删除</a>
+    {% endif %}
+    </p>
+{% endmacro %}

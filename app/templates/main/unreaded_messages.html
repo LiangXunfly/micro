@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    {% if messages == [] %}
+    你没有新动态！
+    {% else %}
+        {% include 'main/messages.html' %}
+    {% endif %}
+    <br>
+    <a href="{{ url_for('main.old_message') }}">查看已读动态</a>
+{% endblock %}

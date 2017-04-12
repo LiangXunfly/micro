@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% import 'main/macros.html' as macros %}
+
+{% block page_content %}
+    {% if users %}
+        {% for user in users %}
+            {{ macros.render_user(user) }}
+        {% endfor %}
+    {% else %}
+        没有同城好友推荐
+    {% endif %}
+{% endblock %}

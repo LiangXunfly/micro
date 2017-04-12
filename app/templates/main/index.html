@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+{% endblock %}
+
+{% block page_content %}
+{% if current_user.is_authenticated %}
+    <p>Hello {{ current_user.username }}!</p>
+    <p>Now, you can post your microblog!</p>
+    {{ wtf.quick_form(form) }}
+    {% include 'main/microblogs.html' %}
+    {% if posts.has_prev %}
+        <a href="{{ url_for('main.index', page=posts.prev_num) }}">上一页</a>
+    {% endif %}
+    {% if posts.has_next %}
+        <a href="{{ url_for('main.index', page=posts.next_num) }}">下一页</a>
+    {% endif %}
+{% else %}
+    <p>Hello Vistor!</p>
+    <p>You can login to post microblog!</p>
+    <a href="{{ url_for('auth.login') }}">Login</a>
+{% endif %}
+{% endblock %}

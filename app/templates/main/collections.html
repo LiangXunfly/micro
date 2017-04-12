@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% import 'main/macros.html' as macros with context %}
+
+{% block page_content %}
+    {% if posts == [] %}
+        <h3>You collect nothing.</h3>
+    {% else %}
+        <div>
+            <center>你收藏的微博：</center><br>
+        </div>
+        {% for post in posts %}
+            <p>
+                {{ macros.render_post(post) }}
+            </p>
+{% endfor %}
+    {% endif %}
+{% endblock %}

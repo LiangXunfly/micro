@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block page_content %}
+    {% if comments %}
+        author: {{ comments[0].post.author.username }}:<br>
+        title: {{ comments[0].post.title }}:<br>
+        content: {{ comments[0].post.body }}<br>
+    {% endif %}
+    <br>
+    {% for comment in comments %}
+        <p>
+        {% if comment.comment_id == None %}
+            {{ comment.author.username }} : {{ comment.body }}
+        {% else %}
+            {{ comment.author.username }} 回复 {{ comment.replied_user.username }}： {{ comment.body }}
+        {% endif %}
+        </p>
+    {% endfor %}
+    {{ wtf.quick_form(form) }}
+{% endblock %}

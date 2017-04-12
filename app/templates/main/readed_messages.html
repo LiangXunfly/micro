@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    {% if messages == [] %}
+    你没有已读动态！
+    {% else %}
+        {% include 'main/messages.html' %}
+    {% endif %}
+{% endblock %}

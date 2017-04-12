@@ -1,0 +1,7 @@
+{% import 'main/macros.html' as macros with context %}
+
+{% for post in posts.items %}
+    <p>
+        {{ macros.render_whole_post(post) }}
+    </p>
+{% endfor %}

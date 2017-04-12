@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% import 'main/macros.html' as macros with context %}
+
+{% block title %}
+我的赞
+{% endblock %}
+
+{% block page_content %}
+    {% for praise in praises %}
+        <p>
+        {{ macros.render_post(praise.post) }}
+        </p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}
+{{ super() }}
+个人资料
+{% endblock %}
+
+{% block page_content %}
+    {% if user == None %}
+    <h2>No this user, please check it!</h2>
+    {% else %}
+        <center><font size="3">{{ user.username }}的个人资料</font></center>
+    {% endif %}
+    {% include 'main/user.html' %}
+
+    {% if current_user != user and current_user.is_following(user) %}
+        <a href="{{ url_for('main.unfollow', username=user.username) }}">&nbsp;&nbsp;&nbsp;取消关注Ta</a>
+    {% elif current_user != user and not current_user.is_following(user) %}
+        <a href="{{ url_for('main.follow', username=user.username) }}">&nbsp;&nbsp;&nbsp;关注Ta</a>
+    {% endif %}
+    <p>
+    {% if user.about_me or user.sex or user.location %}
+        {% if user.about_me %}
+            个人介绍:  {{ user.about_me }}.<br>
+        {% endif %}
+        {% if user.sex %}
+            性别:
+            {% if user.sex == 'male' %}男
+            {% elif user.sex == 'female' %}女
+            {% endif %}
+            <br>
+        {% endif %}
+        {% if user.location %}
+            城市: {{ user.location }}<br>
+        {% endif %}
+    {% else %}
+        the user is lazy, leave nothing here
+    {% endif %}
+    </p>
+    {{ user.followed.count() }}<a href="{{ url_for('main.followeds', username=user.username) }}">关注</a>&nbsp;&nbsp;
+    {{ user.followers.count() }}<a href="{{ url_for('main.followers', username=user.username) }}">粉丝</a><br><br>
+
+    {% if user != current_user %}
+        <a href="{{ url_for('main.blogs', username=user.username) }}">Ta的微博</a><br>
+        <br><a href="{{ url_for('main.get_collections') }}">Ta的收藏</a>&nbsp;&nbsp;
+
+    {% else %}
+        <p><a href="{{ url_for('main.personals') }}">你的私人微博</a></p>
+        <p><a href="{{ url_for('main.edit_profile') }}">编辑个人资料</a></p>
+        <p><a href="{{ url_for('main.edit_password') }}">修改密码</a></p>
+    {% endif %}
+
+    <br>
+    <br>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block page_content %}
+    {% if current_user == user %}
+        {{ wtf.quick_form(form) }}
+    {% endif %}
+    {% if posts == [] %}
+        <h3>{{ user }} is lazy, write nothing.</h3>
+    {% else %}
+        {% include 'main/microblogs.html' %}
+    {% endif %}
+        {% if posts.has_prev %}
+            <a href="{{ url_for('main.blogs', username=user.username, page=posts.prev_num) }}">上一页</a>
+        {% endif %}
+        {% if posts.has_next %}
+            <a href="{{ url_for('main.blogs', username=user.username, page=posts.next_num) }}">下一页</a>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,5 @@
+{% import 'main/macros.html' as macros with context %}
+
+{% for comment in post.comments %}
+    {{ macros.render_comment(comment) }}
+{% endfor %}

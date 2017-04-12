@@ -1,0 +1,51 @@
+{% import 'main/macros.html' as macros  %}
+
+{% for message in messages %}
+    <p>
+    {% if message.type == 1 %}
+        {% set praise = types[1].query.get(message.refer_id) %}
+        {% set post = types[0].query.get(praise.post_id) %}
+        {{ praise.praiser.username }}&nbsp;&nbsp;{{ post.timestamp }}赞了你的微博:“{{ post.title }}”<br>
+    {% elif message.type == 2 %}
+        {% set collection = types[2].query.get(message.refer_id) %}
+        {% set post = types[0].query.get(collection.post_id) %}
+        {{ collection.collector.username }}
+        {{ message.timestamp }}&nbsp;&nbsp;收藏了你的微博: “{{ post.title }}”<br>
+    {% elif message.type == 3 %}
+        {% set comment = types[3].query.get(message.refer_id) %}
+        {% set post = types[0].query.get(comment.post_id) %}
+        {{ comment.author.username }}
+        {% if comment.replied_user_id == None %}
+            {{ message.timestamp }}&nbsp;&nbsp;评论了你的微博: “{{ post.title }}”<br>
+        {% else %}
+            {{ message.timestamp }}&nbsp;&nbsp;在微博 “{{ post.title }}” 中回复了你:<br>
+        {% endif %}
+    {% elif message.type == 4 %}
+        {% set follow = types[4].query.get(message.refer_id) %}
+        {% set follower = User.query.get(follow.follower_id) %}
+        {{ follower }} {{ follow.timestamp }} &nbsp;&nbsp;关注了你:<br>
+    {% elif message.type == 5 %}
+        {% set post = types[0].query.get(message.refer_id) %}
+        你关注的用户 {{ post.author.username }} {{ post.timestamp }} &nbsp;&nbsp;发布了一条新微博:<br>
+        {{ post.title }}<br>
+    {% elif message.type == 6 %}
+        {% set report = types[5].query.get(message.refer_id) %}
+        {% if report.type == 1 %}
+            {% set post = types[0].query.get(report.refer_id) %}
+            你的被一条举报的微博 {{ post.title }} 被成功处理
+        {% elif report.type == 2 %}
+            {% set comment = types[3].query.get(report.refer_id) %}
+            {% set post = types[0].query.get(comment.post_id) %}
+            你的一条被举报的在“{{ post.title }}” 中的
+            {% if comment.comment_id == None %}
+                评论：
+            {% else %}
+                回复:
+            {% endif %}
+            “{{ comment.body }}” 被成功处理<br>
+        {% endif %}
+
+    {% endif %}
+    <a href="{{ url_for('main.see_message', id=message.id) }}">查看详情</a>
+    </p>
+{% endfor %}

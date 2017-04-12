@@ -1,0 +1,24 @@
+{% import 'main/macros.html' as macros with context %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% macro render_report(report) %}
+<p>
+    {{ macros.render_user(report.author) }}
+    {% if report.type == 1 %}
+        举报了一条微博:
+        {% set post = Post.query.get(report.refer_id) %}
+    {% elif report.type == 2 %}
+        {% set comment = Comment.query.get(report.refer_id) %}
+        {% set post = Post.query.get(comment.post_id) %}
+        {% if comment.refer_id == None %}
+            举报了一条评论
+        {% else %}
+            举报了一条回复
+        {% endif %}
+    {% endif %}
+    {{ macros.render_post_content(post) }}
+    {% if comment %}
+        {{ macros.render_comment(comment) }}
+    {% endif %}
+</p>
+{% endmacro %}

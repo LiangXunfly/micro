@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block page_content %}
+    <center>{{ user.username }}的相册</center>
+    {{ wtf.quick_form(form) }}<br>
+    {% for album in albums %}
+        <p>
+        相册：<a href="{{ url_for('main.see_album', id=album.id) }}">{{ album.name }}</a>
+        </p>
+    {% endfor %}
+{% endblock %}

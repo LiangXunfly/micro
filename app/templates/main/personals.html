@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block page_content %}
+    {% if posts.items == [] %}
+        你还没有私密微博！
+    {% else %}
+        <p>你的私密微博：</p>
+    {% endif %}
+    {% include 'main/microblogs.html' %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{% if user.avatar_url %}
+    <img src="{{ user.avatar_url }}", width="60", height="60">
+{% else %}
+    <img src="{{ url_for('static', filename='images/favicon.ico') }}", width="60", height="60">
+{% endif %}
+<a href="{{ url_for('main.user', username=user.username) }}"><font size="1", color="#dc143c">{{ user.username }}</font></a>

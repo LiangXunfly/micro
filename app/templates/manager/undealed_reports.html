@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% import 'manager/macros.html' as macros with context %}
+
+{% block page_content %}
+    {% if reports == [] %}
+        <h3>没有需要处理的举报</h3>
+    {% else %}
+        <h3>{{ reports|count }}条举报需要处理</h3>
+    {% endif %}
+    {% for report in reports %}
+        {{ macros.render_report(report) }}
+        <a href="{{ url_for('manager.deal_report', id=report.id) }}">现在处理</a>
+    {% endfor %}
+    <br><br><a href="{{ url_for('manager.dealed_reports') }}">查看已处理举报</a>
+{% endblock %}
+
+

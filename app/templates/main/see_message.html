@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% import 'main/macros.html' as macros with context %}
+
+{% block page_content %}
+    {% if type == 1 %}
+        <p>
+        {{ macros.render_user(author) }} {{ praise.timestamp }} 赞了你的微博：<br>
+        {{ macros.render_post(post) }}
+        </p>
+    {% elif type == 2 %}
+        <p>
+        {{ macros.render_user(author) }} {{ collection.timestamp }}收藏了你的微博：<br>
+        {{ macros.render_post(post) }}
+        </p>
+    {% elif type == 3 %}
+        <p>
+            {{ macros.render_user(author) }}
+            {% if comments[-1].comment_id == None %}
+                 评论了你的微博 “{{ post.title }}”
+            {% else %}
+                在微博 "{{ post.title }}"中回复了你
+            {% endif %}
+            {{ macros.render_post(post) }}
+            {% for comment in comments %}
+                {{ macros.render_comment(comment) }}
+            {% endfor %}
+        </p>
+    {% elif type == 4 %}
+        <p>
+            {{ macros.render_user(author) }} {{ follow.timestamp }} 关注你
+        </p>
+    {% elif type == 5 %}
+        <p>
+            你关注的用户 {{ macros.render_user(author) }} 发表了微博 {{ post.title }}
+            {{ macros.render_whole_post(post) }}
+        </p>
+    {% elif type == 6 %}
+        <p>
+            {% if report.type == 1 %}
+                {% set post = Post.query.get(report.refer_id) %}
+                你的被一条举报的微博 "{{ post.title }}" 被成功处理
+            {% elif report.type == 2 %}
+                {% set comment = Comment.query.get(report.refer_id) %}
+                {% set post = Post.query.get(comment.post_id) %}
+                你的一条被举报的在{{ macros.render_post_content(post) }} 中的
+                {% if comment.refer_id == None %}
+                    评论：
+                {% else %}
+                    回复:
+                {% endif %}
+                "{{ comment.body }}"
+            {% endif %}
+            <br>被成功处理,处理结果为：<br>
+            {% if report.result == 0 %}
+                符合微博建设，不做处理
+            {% elif report.result == 1 %}
+                限制权限三小时，敏感内容被删除
+            {% elif report.result == 2 %}
+                限制权限一天，敏感内容被删除
+            {% elif report.result == 3 %}
+                限制权限三天，敏感内容被删除
+            {% elif report.result == 4 %}
+                限制权限一个月，敏感内容被删除
+            {% endif %}
+        </p>
+    {% endif %}
+{% endblock %}

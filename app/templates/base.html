@@ -1,0 +1,101 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+{% endblock %}
+
+{% block navbar %}
+<div class="container">
+    <div class="page-header">
+        <header id="header" class="">
+        <div class="nav-box">
+            <p><i class="iconfont icon-unie61d" id="logo"></i>个人微博</p>
+            <form action="">
+                <input type="text" name="" placeholder="搜索用户">
+                <input type="submit" name="" value="搜索">
+            </form>
+            <ul>
+                <li><a href="{{ url_for('main.index') }}"><i class="iconfont icon-shouye-copy-copy-copy icon1" ></i>首页</a></li>
+                {% if not current_user.is_authenticated %}
+                    <li><a href="{{ url_for('auth.register') }}">注册</a></li>
+                    <li><a href="{{ url_for('auth.login') }}"><i class="iconfont icon-denglu icon1"></i>登录</a></li>
+                {% else %}
+                    <li>{{ current_user.username }}</li>
+                    <a href="{{ url_for('auth.logout') }}">退出</a>
+                {% endif %}
+            </ul>
+        </div>
+        </header>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+    {% for message in get_flashed_messages() %}
+        <font color="red">{{ message }}</font><br>
+    {% endfor %}
+    <html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static' , filename='icon/iconfont.css') }} ">
+
+    <title>moban</title>
+</head>
+<body>
+    <div class="banner">
+        <img src="{{ url_for('static', filename='imgs/banner.png') }}">
+    </div>
+    <article>
+        <section>
+            <aside>
+                <ul><li><a href="{{ url_for('main.index') }}">首页</a></li></ul>
+                {% if current_user.is_authenticated %}
+                    <ul><li><a href="{{ url_for('main.messages') }}">{{ current_user.messages.filter(Message.readed==False).count() }}&nbsp;消息</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.praises') }}">我的赞</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.blogs', username=current_user.username) }}">我的微博</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.get_collections') }}">我的收藏</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.followeds', username=current_user.username) }}">我的关注</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.followers', username=current_user.username) }}">我的粉丝</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.albums', id=current_user.id) }}">我的相册</a></li></ul>
+                    <ul><li><a href="{{ url_for('main.user', username=current_user.username) }}">我的个人资料</a></li></ul>
+                {% endif %}
+            </aside>
+            <div class="art-box">
+                {% block page_content %}
+                {% endblock %}
+            </div>
+            <div class="aside-r">
+                <aside style="width: 234px;">
+                    <ul><li> <a href="{{ url_for('main.same_city_friends') }}">同城好友</a></li></ul>
+                    <ul><li><a href="">我的收藏</a></li></ul>
+                    <ul><li><a href="">我的关注</a></li></ul>
+                    <ul><li><a href="">我的粉丝</a></li></ul>
+                    <ul><li><a href="">我的关注</a></li></ul>
+                    <ul><li><a href="">我的微博</a></li></ul>
+            </aside>
+            </div>
+        </section>
+    </article>
+    <footer>
+        <div class="f-section">
+            <p>友情链接：<a href="https:/weibo.com/login.php">新浪微博</a><a href="https://www.zhihu.com">知乎</a><a href="https://www.w3schools.com">w3c-school</a></p>
+        </div>
+    </footer>
+</body>
+</html>
+
+{% endblock %}
+

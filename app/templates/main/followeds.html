@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    follow
+{% endblock %}
+
+{% block page_content %}
+{% if users %}
+    <center>
+    {% if current_user == user %}
+        你
+    {% else %}
+        {{ user.username }}
+    {% endif %}
+    的关注用户:<br>
+    </center>
+    {% for key in users.keys() %}
+        {% if current_user == user %}
+            你
+        {% else %}
+            <a href="{{ url_for('main.user', username=user.username) }}">{{ user.username }}</a>
+        {% endif %}
+        &nbsp;{{ users.get(key) }}&nbsp;关注了
+        <a href="{{ url_for('main.user', username=key) }}">{{ key }}</a>
+    {% endfor %}
+{% else %}
+    <center>
+    {% if current_user == user %}
+        你
+    {% else %}
+        {{ user.username }}
+    {% endif %}
+    还没有关注用户
+    </center>
+{% endif %}
+{% endblock %}
